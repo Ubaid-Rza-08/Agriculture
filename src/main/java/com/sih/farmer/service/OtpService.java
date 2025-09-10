@@ -1,4 +1,4 @@
-package com.sih.farmer.sevice;
+package com.sih.farmer.service;
 
 import com.sih.farmer.config.TwilioConfig;
 import com.sih.farmer.dto.LoginResponseDto;
@@ -136,6 +136,30 @@ public class OtpService {
         } catch (Exception e) {
             log.error("Failed to send SMS to {}: {}", phoneNumber, e.getMessage());
             throw new RuntimeException("Failed to send SMS: " + e.getMessage());
+        }
+    }
+
+
+
+    public String sendWeatherAlert(String alert, String city, String phoneNumber) {
+        try {
+            String messageBody = String.format(
+                    "Weather Alert for %s: %s. Please take necessary precautions. Stay safe!",
+                    city, alert
+            );
+
+            Message message = Message.creator(
+                    new PhoneNumber(phoneNumber),
+                    new PhoneNumber(twilioConfig.getTwilioPhoneNumber()),
+                    messageBody
+            ).create();
+
+            log.info("Weather alert SMS sent successfully to {} with message SID: {}", phoneNumber, message.getSid());
+            return "Weather alert sent successfully";
+
+        } catch (Exception e) {
+            log.error("Failed to send weather alert SMS to {}: {}", phoneNumber, e.getMessage());
+            throw new RuntimeException("Failed to send weather alert SMS: " + e.getMessage());
         }
     }
 }

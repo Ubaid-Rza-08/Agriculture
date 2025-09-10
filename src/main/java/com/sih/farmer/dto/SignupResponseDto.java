@@ -12,4 +12,5 @@ import java.util.UUID;
 public class SignupResponseDto {
     private UUID userId;
     private String phone;
+    private String city;
 }

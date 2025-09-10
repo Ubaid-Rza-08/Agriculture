@@ -1,10 +1,10 @@
 package com.sih.farmer.controller;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.sih.farmer.config.Config;
 import com.sih.farmer.dto.*;
-import com.sih.farmer.sevice.AuthService;
-import com.sih.farmer.sevice.OtpService;
+
+import com.sih.farmer.service.AuthService;
+import com.sih.farmer.service.OtpService;
+import com.sih.farmer.service.WeatherService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -82,18 +82,5 @@ public class AuthController {
         }
     }
 
-    @GetMapping("/location")
-    public String searchWeather(@RequestParam String city) throws IOException, InterruptedException {
-        String url = String.format("https://api.openweathermap.org/data/2.5/weather?units=metric&q=%s&appid=4c3fb3dc336e3f3a2ccfc656bf857318", city);
 
-        // Get the full response as a JsonNode
-        JsonNode response = restTemplate.getForObject(url, JsonNode.class);
-
-        // Extract the main weather condition from weather array
-        if (response != null && response.has("weather") && response.get("weather").isArray() && response.get("weather").size() > 0) {
-            return response.get("weather").get(0).get("main").asText();
-        }
-
-        return "Weather data not available";
-    }
 }

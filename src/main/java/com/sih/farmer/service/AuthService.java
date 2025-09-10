@@ -1,4 +1,4 @@
-package com.sih.farmer.sevice;
+package com.sih.farmer.service;
 
 import com.sih.farmer.dto.RefreshResponseDto;
 import com.sih.farmer.dto.SignUpRequestDto;
@@ -17,6 +17,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -31,8 +32,9 @@ public class AuthService {
     private final RefreshTokenRepository refreshTokenRepository;
     private final UserRepository userRepository;
     private final AuthUtil authUtil;
+    private final WeatherService weatherService;
 
-    public SignupResponseDto signup(SignUpRequestDto signupRequestDto) {
+    public SignupResponseDto signup(SignUpRequestDto signupRequestDto) throws IOException, InterruptedException {
         // Check if phone already exists
         UserEntity existingUser = userRepository.findByPhone(signupRequestDto.getPhone());
         if (existingUser != null) {
@@ -48,7 +50,7 @@ public class AuthService {
                 .build();
 
         UserEntity savedUser = userRepository.save(user);
-        return new SignupResponseDto(savedUser.getId(), savedUser.getPhone());
+        return new SignupResponseDto(savedUser.getId(), savedUser.getPhone(),savedUser.getCity());
     }
 
     public RefreshResponseDto refreshAccessToken(String refreshTokenString) throws Exception {
